@@ -8,9 +8,17 @@ function decodeUnicodeEscapes(str: string) {
 }
 
 export const GetBonusTraits = (address: string | undefined) => {
-    const queryTraits = `query GetRank { Wallet( input: {blockchain: polygon, identity: "${address}"}) { tokenBalances { tokenNfts { address tokenId token { name tokenTraits } } } } }`;
+    const queryTraits = `query GetTraits { Wallet( input: {blockchain: polygon, identity: "${address}"}) { tokenBalances { tokenNfts { address tokenId token { name tokenTraits } } } } }`;
     const { data, loading, error } = useQuery(queryTraits);
 
+    if (data) {
+        console.log('Data structure:', JSON.stringify(data, null, 2));
+    }
+    
+    if (error) {
+        console.error('Query error:', error);
+    }
+    
     let rank = 1;  // Default rank
     let maxHealthBonus = 0;
     let maxStaminaBonus = 0;
@@ -26,7 +34,7 @@ export const GetBonusTraits = (address: string | undefined) => {
             ...item,
             tokenNfts: {
                 ...item.tokenNfts,
-                tokenId: parseInt(item.tokenNfts.tokenId, 10)
+                tokenId: parseInt(item.tokenNfts?.tokenId, 10)
             }
         }));
 
@@ -44,6 +52,11 @@ export const GetBonusTraits = (address: string | undefined) => {
         critChanceBonus = parseFloat(decodeUnicodeEscapes(Object.keys(traits.CritChance)[0]));
         critDamageBonus = parseFloat(decodeUnicodeEscapes(Object.keys(traits.CritDamage)[0]));
     }
+    console.log('rank', rank);
+    console.log('maxHealthBonus', maxHealthBonus);
+    console.log('maxStaminaBonus', maxStaminaBonus);
+    console.log('attackBonus', attackBonus);
+    console.log('defenseBonus', defenseBonus);
 
     return {
         rank,
