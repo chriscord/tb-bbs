@@ -1,5 +1,6 @@
 import { ThirdwebNftMedia } from "@thirdweb-dev/react";
 import { NFT } from "@thirdweb-dev/sdk";
+import { GetBonusTraits } from "../hooks/GetBonusTraits";
 import { init, useQuery } from "@airstack/airstack-react";
 import { ASApiKey } from "../const/constants";
 
@@ -40,28 +41,12 @@ const GetSmartWalletAddress = () => {
     return { RenderedAddress, address };
 };
 
-const GetTraits = (address: string) => {
-    const queryTraits = `query GetRank { Wallet( input: {blockchain: polygon, identity: "${address}"}) { tokenBalances { tokenNfts { address tokenId token { name tokenTraits } } } } }`;
-    const { data, loading, error } = useQuery(queryTraits);
+export const GetTraits = (address: string) => {
 
-    let rank = 1;  // Default rank
+    const { rank, maxHealthBonus, maxStaminaBonus, attackBonus, defenseBonus, recoveryBonus, moveSpeedBonus, critChanceBonus, critDamageBonus, loading, error } = GetBonusTraits(address);
+
     let formattedHighestRank = 'The Barbarians Rank 1';  // Default formatted rank
-
-    if (data && data.Wallet && data.Wallet.tokenBalances) {
-        const parsedTokenBalances = data.Wallet.tokenBalances.map((item: { tokenNfts: { tokenId: string; }; }) => ({
-            ...item,
-            tokenNfts: {
-                ...item.tokenNfts,
-                tokenId: parseInt(item.tokenNfts.tokenId, 10)
-            }
-        }));
-
-        const sortedTokenBalances = parsedTokenBalances.sort((a: { tokenNfts: { tokenId: number; }; }, b: { tokenNfts: { tokenId: number; }; }) => b.tokenNfts.tokenId - a.tokenNfts.tokenId);
-        const highestRankItem = sortedTokenBalances[0];
-        const { name } = highestRankItem.tokenNfts.token;
-        const rank = highestRankItem.tokenNfts.tokenId + 2;
-        formattedHighestRank = `${name} ${rank}`;
-    }
+    formattedHighestRank = `The Barbarians Rank ${rank}`;
 
     const RenderedRank = () => {
         if (loading) {
@@ -83,7 +68,7 @@ const GetTraits = (address: string) => {
         );
     };
 
-    return { RenderedRank, rank };
+    return { RenderedRank, rank, maxHealthBonus, maxStaminaBonus, attackBonus, defenseBonus, recoveryBonus, moveSpeedBonus, critChanceBonus, critDamageBonus };
 };
 
 
