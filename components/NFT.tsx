@@ -68,13 +68,13 @@ export const GetTraits = (address: string) => {
         );
     };
 
-    return { RenderedRank, rank, maxHealthBonus, maxStaminaBonus, attackBonus, defenseBonus, recoveryBonus, moveSpeedBonus, critChanceBonus, critDamageBonus };
+    return { RenderedRank, rank, maxHealthBonus, maxStaminaBonus, attackBonus, defenseBonus, recoveryBonus, moveSpeedBonus, critChanceBonus, critDamageBonus, loading, error };
 };
 
 
 export default function NFTComponent({ nft }: Props) {
     const { RenderedAddress, address } = GetSmartWalletAddress();
-    const { RenderedRank, rank } = GetTraits(address);
+    // const { RenderedRank, rank } = GetTraits(address);
 
     return (
         <>

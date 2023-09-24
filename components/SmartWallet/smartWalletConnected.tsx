@@ -76,7 +76,7 @@ const ClaimAttributes = () => {
             <h3>Get Attributes:</h3>
             <Web3Button
                 contractAddress={EDITIONDROP_ADDRESS}
-                action={(contract) => contract.erc1155.claim(traitBonuses.rank - 1, 1)} // tokenId, amount
+                action={(contract) => contract.erc1155.claim(traitBonuses.rank , 1)} // tokenId, amount
             >Level Up Chracter</Web3Button>
             {ownedNFTsIsLoading ? (
                 <p>Loading...</p>
