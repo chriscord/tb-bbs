@@ -2,6 +2,7 @@ import React from "react";
 import { Signer } from "ethers";
 import { ThirdwebNftMedia, ThirdwebSDKProvider, Web3Button, useAddress, useBalance, useContract, useOwnedNFTs } from "@thirdweb-dev/react";
 import { EDITIONDROP_ADDRESS, TOKENDROP_ADDRESS, activeChain, TWClientId } from "../../const/constants";
+import { GetBonusTraits } from "../../hooks/GetBonusTraits";
 import styles from "../../styles/Home.module.css";
 // import toast from "react-hot-toast";
 // import toastStyle from "../../util/toastConfig";
@@ -54,7 +55,7 @@ const AddExp = () => {
             )}
             <Web3Button
                 contractAddress={TOKENDROP_ADDRESS}
-                action={(contract) => contract.erc20.claim(10)}
+                action={(contract) => contract.erc20.claim(100000)}
             >Add EXP</Web3Button>
         </div>
     )
@@ -62,6 +63,7 @@ const AddExp = () => {
 
 const ClaimAttributes = () => {
     const address = useAddress();
+    const traitBonuses = GetBonusTraits(address);
 
     const { contract } = useContract(EDITIONDROP_ADDRESS);
     const {
@@ -74,7 +76,7 @@ const ClaimAttributes = () => {
             <h3>Get Attributes:</h3>
             <Web3Button
                 contractAddress={EDITIONDROP_ADDRESS}
-                action={(contract) => contract.erc1155.claim(0, 1)} // tokenId, amount
+                action={(contract) => contract.erc1155.claim(traitBonuses.rank - 1, 1)} // tokenId, amount
             >Level Up Chracter</Web3Button>
             {ownedNFTsIsLoading ? (
                 <p>Loading...</p>

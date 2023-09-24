@@ -81,7 +81,7 @@ export default function NFTComponent({ nft }: Props) {
             <ThirdwebNftMedia metadata={nft.metadata} />
             <p>Token ID: {nft.metadata.id}</p>
             <p>{nft.metadata.name}</p>
-            <RenderedRank />
+            {/* <RenderedRank /> */}
         </>
     )
 }

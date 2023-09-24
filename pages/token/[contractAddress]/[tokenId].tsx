@@ -56,14 +56,14 @@ export default function Token({ nft }: Props) {
                     ))}
                 </div>
                 <div className={styles.column}>
-                    <p>+{traitBonuses.maxHealthBonus.toFixed(2)}% MaxHealth Bonus</p>
-                    <p>+{traitBonuses.maxStaminaBonus.toFixed(2)}% MaxStamina Bonus</p>
-                    <p>+{traitBonuses.attackBonus} Attack Bonus</p>
-                    <p>+{traitBonuses.defenseBonus} Defense Bonus</p>
-                    <p>+{traitBonuses.recoveryBonus.toFixed(2)} Recovery Bonus</p>
-                    <p>+{traitBonuses.moveSpeedBonus.toFixed(2)} MoveSpeed Bonus</p>
-                    <p>+{traitBonuses.critChanceBonus.toFixed(2)}% CritChance Bonus</p>
-                    <p>+{traitBonuses.critDamageBonus.toFixed(2)}% CritDamage Bonus</p>
+                    <p>+{(traitBonuses.rank * traitBonuses.maxHealthBonus).toFixed(2)}% MaxHealth Bonus</p>
+                    <p>+{(traitBonuses.rank * traitBonuses.maxStaminaBonus).toFixed(2)}% MaxStamina Bonus</p>
+                    <p>+{traitBonuses.rank * traitBonuses.attackBonus} Attack Bonus</p>
+                    <p>+{traitBonuses.rank * traitBonuses.defenseBonus} Defense Bonus</p>
+                    <p>+{(traitBonuses.rank * traitBonuses.recoveryBonus).toFixed(2)} Recovery Bonus</p>
+                    <p>+{(traitBonuses.rank * traitBonuses.moveSpeedBonus).toFixed(2)} MoveSpeed Bonus</p>
+                    <p>+{(traitBonuses.rank * traitBonuses.critChanceBonus).toFixed(2)}% CritChance Bonus</p>
+                    <p>+{(traitBonuses.rank * traitBonuses.critDamageBonus).toFixed(2)}% CritDamage Bonus</p>
                 </div>
             </div>
 
