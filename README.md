@@ -12,7 +12,7 @@ Every NFT character, an ERC-721, comes with base stats metadata. EIP-6551 permit
 
 Characters amass EXP (ERC-20 tokens) and can level up by expending a specified amount of EXP, as designated by the game developer. The level-up and power-up processes are facilitated by minting an ERC-1155 token with bonus game stat metadata, which is then applied to enhance the character’s base stats—a familiar mechanism in traditional game development.
 
-#Future Plans
+# Future Plans
 Game Engine Integration: Presently, CharStat6551 showcases character leveling up, power-up acquisition, and stat upgrades from power-ups. This standardized data structure is slated for integration into game engines like Unity or Godot Engine via Third-party SDKs from entities like ChainSafe and Thirdweb. Network Expansion: Initially built on Polygon Mainnet, CharStat6551 has eyes set on branching out to other chains. Enhanced Security: By embracing ZK-proof in select use cases, security is bolstered, and central game server dependency is reduced, propelling games closer to a fully decentralized operation. Expandability: The EIP-6551 framework, while adept for game stats, has the extensibility to envision Autonomous World residents, each with a distinct wallet, assets, and traits.
 
 ## How it's Made
