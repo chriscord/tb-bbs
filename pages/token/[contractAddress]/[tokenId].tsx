@@ -40,7 +40,16 @@ export default function TokenPage({ nft, contractMetadata }: Props) {
     }, [nft, smartWalletAddress, wallet, address, signer]);  
     console.log("smartWalletAddress: ", smartWalletAddress);
     const traitBonuses = GetBonusTraits(smartWalletAddress) || {};
-      
+    
+    console.log("[Page] Health Bonus: ", traitBonuses.traits.maxHealthBonus);
+    console.log("[Page] Stamina Bonus: ", traitBonuses.traits.maxStaminaBonus);
+    console.log("[Page] Attack Bonus: ", traitBonuses.traits.attackBonus);
+    console.log("[Page] Defense Bonus: ", traitBonuses.traits.defenseBonus);
+    console.log("[Page] Recovery Bonus: ", traitBonuses.traits.recoveryBonus);
+    console.log("[Page] MoveSpeed Bonus: ", traitBonuses.traits.moveSpeedBonus);
+    console.log("[Page] CritChance Bonus: ", traitBonuses.traits.critChanceBonus);
+    console.log("[Page] CritDamage Bonus: ", traitBonuses.traits.critDamageBonus);
+    
     return (
         <div className={styles.container}>
             <div className={styles.topSection}>

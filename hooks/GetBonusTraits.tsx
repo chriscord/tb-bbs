@@ -32,7 +32,7 @@ type TraitsResult = {
 export const GetBonusTraits = (
     address: string | undefined
 ): TraitsResult => {
-    const queryTraits = `query GetTraits { Wallet( input: {blockchain: polygon, identity: "${address}"}) { tokenBalances { tokenNfts { address tokenId token { name tokenTraits } } } } }`;
+    const queryTraits = `query GetTraits { Wallet( input: {blockchain: polygon, identity: "${address}"}) { tokenBalances { tokenNfts { address tokenId metaData { attributes { trait_type value } } } } } }`;
     const { data, loading, error } = useQuery(queryTraits);
 
     if (error) {
@@ -83,22 +83,33 @@ export const GetBonusTraits = (
                 b.tokenNfts.tokenId - a.tokenNfts.tokenId
         );
         const highestRankItem = sortedTokenBalances[0];
+        console.log("HighestRank: ", highestRankItem.tokenNfts?.tokenId + 2)
 
         if (highestRankItem.tokenNfts?.tokenId != null) {
-            rank = highestRankItem.tokenNfts.tokenId + 2;
-            const traits = highestRankItem.tokenNfts.token.tokenTraits;
-            maxHealthBonus = traits.MaxHealth ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.MaxHealth)[0])) : 0;
-            maxStaminaBonus = traits.MaxStamina ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.MaxStamina)[0])) : 0;
-            attackBonus = traits.Attack ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.Attack)[0])) : 0;
-            defenseBonus = traits.Defense ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.Defense)[0])) : 0;
-            recoveryBonus = traits.Recovery ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.Recovery)[0])) : 0;
-            moveSpeedBonus = traits.MoveSpeed ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.MoveSpeed)[0])) : 0;
-            critChanceBonus = traits.CritChance ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.CritChance)[0])) : 0;
-            critDamageBonus = traits.CritDamage ? parseFloat(decodeUnicodeEscapes(Object.keys(traits.CritDamage)[0])) : 0;
+            rank = highestRankItem.tokenNfts?.tokenId + 2;
+            const traits = highestRankItem.tokenNfts?.metaData.attributes;
+            maxHealthBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'MaxHealth')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'MaxHealth')?.value) : 0;
+            maxStaminaBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'MaxStamina')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'MaxStamina')?.value) : 0;
+            attackBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'Attack')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'Attack')?.value) : 0;
+            defenseBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'Defense')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'Defense')?.value) : 0;
+            recoveryBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'Recovery')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'Recovery')?.value) : 0;
+            moveSpeedBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'MoveSpeed')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'MoveSpeed')?.value) : 0;
+            critChanceBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'CritChance')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'CritChance')?.value) : 0;
+            critDamageBonus = traits?.find((attr: { trait_type: string; }) => attr.trait_type === 'CritDamage')?.value ? parseFloat(traits.find((attr: { trait_type: string; }) => attr.trait_type === 'CritDamage')?.value) : 0;
         } else {
             rank = 1;
         }
     }
+
+    console.log("[NFT] Rank: ", rank);
+    console.log("[NFT] MaxHealth Bonus: ", maxHealthBonus);
+    console.log("[NFT] MaxStamina Bonus: ", maxStaminaBonus);
+    console.log("[NFT] Attack Bonus: ", attackBonus);
+    console.log("[NFT] Defense Bonus: ", defenseBonus);
+    console.log("[NFT] Recovery Bonus: ", recoveryBonus);
+    console.log("[NFT] MoveSpeed Bonus: ", moveSpeedBonus);
+    console.log("[NFT] CritChance Bonus: ", critChanceBonus);
+    console.log("[NFT] CritDamage Bonus: ", critDamageBonus);
 
     return {
         traits: {
