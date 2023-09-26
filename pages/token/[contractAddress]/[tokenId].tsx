@@ -14,32 +14,33 @@ type Props = {
     contractMetadata: any;
 };
 
-export const useSmartWallet = (nft: NFT) => {
+export default function TokenPage({ nft, contractMetadata }: Props) {
     const [smartWalletAddress, setSmartWalletAddress] = useState<string | undefined>(undefined);
     const [signer, setSigner] = useState<Signer>();
+    const address = useAddress(); // Thirdweb hook; Get users' wallet address
     const wallet = useWallet(); // Thirdweb hook
   
     useEffect(() => {
-      const createSmartWallet = async () => {
-        if (nft && !smartWalletAddress && wallet) {
+      const createSmartWallet = async (nft: NFT) => {
+        if (nft && smartWalletAddress == null && address && wallet) {
           const smartWallet = newSmartWallet(nft);
           await smartWallet.connect({ personalWallet: wallet });
           setSigner(await smartWallet.getSigner());
-          const address = await smartWallet.getAddress();
-          setSmartWalletAddress(address);
+        //   const address = await smartWallet.getAddress();
+          setSmartWalletAddress(await smartWallet.getAddress());
+          console.log(smartWalletAddress);
+          return smartWallet;
+        }
+        else {
+            console.log("Wallet not created.")
         }
       };
   
-      createSmartWallet();
-    }, [nft, smartWalletAddress, wallet, signer]);  
-
-    return { smartWalletAddress, signer };
-};
-
-export default function Token({ nft }: Props) {
-    const { smartWalletAddress, signer } = useSmartWallet(nft);
-    const traitBonuses = GetBonusTraits(smartWalletAddress);
-  
+      createSmartWallet(nft);
+    }, [nft, smartWalletAddress, wallet, address, signer]);  
+    console.log("smartWalletAddress: ", smartWalletAddress);
+    const traitBonuses = GetBonusTraits(smartWalletAddress) || {};
+      
     return (
         <div className={styles.container}>
             <div className={styles.topSection}>
@@ -48,6 +49,7 @@ export default function Token({ nft }: Props) {
                         <ThirdwebNftMedia metadata={nft.metadata} />
                         <h1>{nft.metadata.name}</h1>
                         <p>Token ID: {nft.metadata.id}</p>
+                        <p>Rank: {traitBonuses.traits.rank}</p>
                     </div>
                 )}
                 <div className={styles.column}>
@@ -56,20 +58,21 @@ export default function Token({ nft }: Props) {
                     ))}
                 </div>
                 <div className={styles.column}>
-                    <p>+{(traitBonuses.rank * traitBonuses.maxHealthBonus).toFixed(2)}% MaxHealth Bonus</p>
-                    <p>+{(traitBonuses.rank * traitBonuses.maxStaminaBonus).toFixed(2)}% MaxStamina Bonus</p>
-                    <p>+{traitBonuses.rank * traitBonuses.attackBonus} Attack Bonus</p>
-                    <p>+{traitBonuses.rank * traitBonuses.defenseBonus} Defense Bonus</p>
-                    <p>+{(traitBonuses.rank * traitBonuses.recoveryBonus).toFixed(2)} Recovery Bonus</p>
-                    <p>+{(traitBonuses.rank * traitBonuses.moveSpeedBonus).toFixed(2)} MoveSpeed Bonus</p>
-                    <p>+{(traitBonuses.rank * traitBonuses.critChanceBonus).toFixed(2)}% CritChance Bonus</p>
-                    <p>+{(traitBonuses.rank * traitBonuses.critDamageBonus).toFixed(2)}% CritDamage Bonus</p>
+                    <p>+{((traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.maxHealthBonus ?? 0)).toFixed(2)}% MaxHealth Bonus</p>
+                    <p>+{((traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.maxStaminaBonus ?? 0)).toFixed(2)}% MaxStamina Bonus</p>
+                    <p>+{(traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.attackBonus ?? 0)} Attack Bonus</p>
+                    <p>+{(traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.defenseBonus ?? 0)} Defense Bonus</p>
+                    <p>+{((traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.recoveryBonus ?? 0)).toFixed(2)} Recovery Bonus</p>
+                    <p>+{((traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.moveSpeedBonus ?? 0)).toFixed(2)} MoveSpeed Bonus</p>
+                    <p>+{((traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.critChanceBonus ?? 0)).toFixed(2)}% CritChance Bonus</p>
+                    <p>+{((traitBonuses.traits.rank ?? 0) * (traitBonuses.traits.critDamageBonus ?? 0)).toFixed(2)}% CritDamage Bonus</p>
                 </div>
             </div>
 
             {smartWalletAddress ? (
                 <SmartWalletConnected
                     signer={signer}
+                    smartWalletAddress={smartWalletAddress}
                 />
             ) : (
                 <p>Loading...</p>

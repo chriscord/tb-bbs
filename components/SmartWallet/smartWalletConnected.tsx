@@ -1,26 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { Signer } from "ethers";
 import { ThirdwebNftMedia, ThirdwebSDKProvider, Web3Button, useAddress, useBalance, useContract, useOwnedNFTs } from "@thirdweb-dev/react";
 import { EDITIONDROP_ADDRESS, TOKENDROP_ADDRESS, activeChain, TWClientId } from "../../const/constants";
 import { GetBonusTraits } from "../../hooks/GetBonusTraits";
 import styles from "../../styles/Home.module.css";
-// import toast from "react-hot-toast";
-// import toastStyle from "../../util/toastConfig";
 
 interface ConnectedProps {
     signer: Signer | undefined;
+    smartWalletAddress?: string;
 };
 
 // Summary: This component is used to connect the smart wallet to the app.
 // ThirdwebSDKProvider is a wrapper component that provides the smart wallet signer and active chain to the Thirdweb SDK.
-const SmartWalletConnected: React.FC<ConnectedProps> = ({ signer }) => {
+const SmartWalletConnected: React.FC<ConnectedProps> = ({ signer, smartWalletAddress }) => {
     return (
         <ThirdwebSDKProvider
             signer={signer}
             activeChain={activeChain}
             clientId={TWClientId}
         >
-            <GetSmartWalletAddress />
+            <div>
+                <p>Smart wallet address: {smartWalletAddress}</p>
+            </div>
             <br />
             <AddExp />
             <br />
@@ -30,20 +31,24 @@ const SmartWalletConnected: React.FC<ConnectedProps> = ({ signer }) => {
     );
 };
 
-const GetSmartWalletAddress = () => {
-    const address = useAddress();
-    return (
-        <div>
-            <p>Smart wallet address: {address}</p>
-        </div>
-    )
-}
-
 const AddExp = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
     const {
         data: tokenBalance,
         isLoading: tokenBalanceIsLoading,
     } = useBalance(TOKENDROP_ADDRESS);
+
+    const handleClick = async () => {
+        setIsLoading(true);
+        setIsDisabled(true);
+
+        // Perform some async operation here
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        setIsLoading(false);
+        setIsDisabled(false);
+    };
 
     return (
         <div className={styles.container}>
@@ -55,7 +60,11 @@ const AddExp = () => {
             )}
             <Web3Button
                 contractAddress={TOKENDROP_ADDRESS}
-                action={(contract) => contract.erc20.claim(100000)}
+                action={(contract) => {
+                    contract.erc20.claim(1000);
+                    handleClick()
+                }}
+                isDisabled={isLoading || isDisabled}
             >Add EXP</Web3Button>
         </div>
     )
@@ -63,6 +72,7 @@ const AddExp = () => {
 
 const ClaimAttributes = () => {
     const address = useAddress();
+    console.log("address:", address);
     const traitBonuses = GetBonusTraits(address);
 
     const { contract } = useContract(EDITIONDROP_ADDRESS);
@@ -76,7 +86,16 @@ const ClaimAttributes = () => {
             <h3>Get Attributes:</h3>
             <Web3Button
                 contractAddress={EDITIONDROP_ADDRESS}
-                action={(contract) => contract.erc1155.claim(traitBonuses.rank , 1)} // tokenId, amount
+                action={(contract) => {
+                    const rank = traitBonuses?.traits?.rank;
+                    if (rank === null) {
+                        alert("Unexpected error.");
+                    } else if (rank >= 1 && rank < 10) {
+                        contract.erc1155.claim(rank - 1, 1);
+                    } else if (rank === 10) {
+                        alert("Character has reached max level.");
+                    }
+                }}
             >Level Up Chracter</Web3Button>
             {ownedNFTsIsLoading ? (
                 <p>Loading...</p>

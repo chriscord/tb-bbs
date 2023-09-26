@@ -23,7 +23,7 @@ const Home: NextPage = () => {
             <NFTGrid
               isLoading={isLoading}
               nfts={data}
-              emptyText="No characters created yet"
+              emptyText="Create a new character for 1 MATIC."
             />
             <Web3Button
               contractAddress={NFTDROP_ADDRESS}
